@@ -1,8 +1,10 @@
-// relationship.js
-
 const { Schema, model } = require('mongoose');
 
-const artist_museumSchema = new Schema({
+const workSchema = new Schema({
+  title: {
+    type: String,
+    required: [true, 'Name field is required'],
+  },
   artist: {
     type: Schema.Types.ObjectId,
     ref: 'Artist',
@@ -13,4 +15,4 @@ const artist_museumSchema = new Schema({
   },
 });
 
-module.exports = model('artist_museum', artist_museumSchema);
+module.exports = model('work', workSchema);

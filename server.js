@@ -46,6 +46,8 @@ app.use((req, res, next) => {
 app.use('/api/users', require('./routes/users'));
 app.use('/api/artists', require('./routes/artists'));
 app.use('/api/museums', require('./routes/museums'));
+app.use('/api/works', require('./routes/works'));
+//app.use('/api/urls', require('./routes/urls'));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
