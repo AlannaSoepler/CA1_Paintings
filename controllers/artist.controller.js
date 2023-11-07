@@ -3,6 +3,8 @@ const Artist = require('../models/artist.model.js');
 
 const readData = (req, res) => {
   Artist.find({})
+    .populate('museums')
+    //.lean().select()
     .then((data) => {
       console.log(data);
       if (data.length > 0) {

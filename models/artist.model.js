@@ -34,10 +34,10 @@ const artistSchema = new Schema(
       type: Date,
       required: [true, 'Date of passing field is required'],
     },
-    museum: [
+    works: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Museum',
+        ref: 'Work',
       },
     ],
   },

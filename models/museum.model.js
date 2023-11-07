@@ -34,10 +34,10 @@ const museumSchema = new Schema(
       type: String,
       required: [false, 'url field is not required'],
     },
-    artist: [
+    works: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Artist',
+        ref: 'Work',
       },
     ],
   },
