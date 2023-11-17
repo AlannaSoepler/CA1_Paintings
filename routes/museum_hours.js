@@ -7,7 +7,7 @@ const {
   createData,
   updateData,
   deleteData,
-} = require('../controllers/museum.controller.js');
+} = require('../controllers/museum_hours.controller.js');
 
 router
   .get('/', readData)

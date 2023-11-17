@@ -47,6 +47,10 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/artists', require('./routes/artists'));
 app.use('/api/museums', require('./routes/museums'));
 app.use('/api/works', require('./routes/works'));
+app.use('/api/subjects', require('./routes/subjects'));
+app.use('/api/product_sizes', require('./routes/product_sizes'));
+app.use('/api/canvas_sizes', require('./routes/canvas_sizes'));
+app.use('/api/museum_hours', require('./routes/museum_hours'));
 //app.use('/api/urls', require('./routes/urls'));
 
 app.listen(port, () => {
