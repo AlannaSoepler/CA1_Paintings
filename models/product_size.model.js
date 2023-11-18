@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const museumSchema = new Schema(
+const product_sizeSchema = new Schema(
   {
     sale_size: {
       type: String,
@@ -20,4 +20,4 @@ const museumSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model('Museum', museumSchema);
+module.exports = model('Product_size', product_sizeSchema);

@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const canvas_sizesSchema = new Schema(
+const canvas_sizeSchema = new Schema(
   {
     width: {
       type: Number,
@@ -24,4 +24,4 @@ const canvas_sizesSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = model('Artist', artistSchema);
+module.exports = model('Canvas_size', canvas_sizeSchema);

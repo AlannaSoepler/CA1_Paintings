@@ -7,7 +7,7 @@ const {
   createData,
   updateData,
   deleteData,
-} = require('../controllers/canvas_hours.controller.js');
+} = require('../controllers/canvas_size.controller.js');
 
 router
   .get('/', readData)

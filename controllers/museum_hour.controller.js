@@ -1,9 +1,9 @@
 const express = require('express');
-const Artist = require('../models/artist.model.js');
+const Museum_hour = require('../models/museum_hour.model.js');
 
 const readData = (req, res) => {
-  Artist.find({})
-    .populate('artists')
+  Museum_hour.find({})
+    .populate('museum_hours')
     //.lean().select()
     .then((data) => {
       console.log(data);
@@ -22,17 +22,17 @@ const readData = (req, res) => {
 const readOne = (req, res) => {
   let id = req.params.id;
 
-  Artist.findById(id)
+  Museum_hour.findById(id)
     .then((data) => {
       if (!data) {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
+        res.status(404).json({ msg: `Museum_hour with id${id}, not found` });
       } else {
         res.status(200).json(data);
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
+        res.status(404).json({ msg: `Museum_hour with id${id}, not found` });
       } else {
         console.log(err);
         res.status(500).json(err);
@@ -44,9 +44,9 @@ const createData = (req, res) => {
   console.log(req.body);
   let inputData = req.body;
 
-  Artist.create(inputData)
+  Museum_hour.create(inputData)
     .then((data) => {
-      console.log(`New Artist created`, data);
+      console.log(`New Museum_hour created`, data);
       res.status(201).json(data);
     })
     .catch((err) => {
@@ -62,8 +62,8 @@ const createData = (req, res) => {
 const updateData = (req, res) => {
   let data = req.body;
   let id = req.params.id;
-  Artist.findByIdAndUpdate(id, data, {
-    //After find a Artist by Id. This option will give us the new data.
+  Museum_hour.findByIdAndUpdate(id, data, {
+    //After find a Museum_hour by Id. This option will give us the new data.
     new: true,
   })
     .then((newData) => {
@@ -73,7 +73,7 @@ const updateData = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(422).json(err);
       } else if (err.name === 'CastError') {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
+        res.status(404).json({ msg: `Museum_hour with id${id}, not found` });
       } else {
         console.log(err);
         res.status(500).json(err);
@@ -83,22 +83,22 @@ const updateData = (req, res) => {
 
 const deleteData = (req, res) => {
   //Update database
-  //Check if Artist exists
-  //delete Artist
+  //Check if Museum_hour exists
+  //delete Museum_hour
   let id = req.params.id;
-  Artist.findByIdAndDelete(id)
+  Museum_hour.findByIdAndDelete(id)
     .then((newData) => {
       if (!newData) {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
+        res.status(404).json({ msg: `Museum_hour with id${id}, not found` });
       } else {
         res.status(200).json({
-          msg: `Artist with id${id} deleted.`,
+          msg: `Museum_hour with id${id} deleted.`,
         });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
+        res.status(404).json({ msg: `Museum_hour with id${id}, not found` });
       } else {
         console.log(err);
         res.status(500).json(err);

@@ -1,19 +1,13 @@
 const { Schema, model } = require('mongoose');
 
-const museumSchema = new Schema(
+const subjectSchema = new Schema(
   {
-    subject: {
+    type: {
       type: String,
       required: [true, 'Name field is required'],
     },
-    works: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Work',
-      },
-    ],
   },
   { timestamps: true }
 );
 
-module.exports = model('Museum', museumSchema);
+module.exports = model('Subject', subjectSchema);
