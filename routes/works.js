@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { loginRequire } = require('../controllers/user.controller.js');
+const { loginRequired } = require('../controllers/user.controller.js');
 const {
   readData,
   readOne,
@@ -12,8 +12,8 @@ const {
 router
   .get('/', readData)
   .get('/:id', readOne)
-  .post('/', createData)
-  .put('/:id', updateData)
-  .delete('/:id', deleteData);
+  .post('/', loginRequired, createData)
+  .put('/:id', loginRequired, updateData)
+  .delete('/:id', loginRequired, deleteData);
 
 module.exports = router;

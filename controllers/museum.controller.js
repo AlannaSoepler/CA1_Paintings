@@ -1,8 +1,11 @@
 const express = require('express');
+const fs = require('fs');
 const Museum = require('../models/museum.model.js');
+const Artist = require('../models/artist.model.js');
+const Work = require('../models/work.model.js');
 
 const readData = (req, res) => {
-    Museum.find({})
+  Museum.find({})
     .then((data) => {
       console.log(data);
       if (data.length > 0) {
@@ -42,6 +45,9 @@ const createData = (req, res) => {
   console.log(req.body);
   let inputData = req.body;
 
+  // Works field should not be included during museum creation
+  delete inputData.works;
+
   Museum.create(inputData)
     .then((data) => {
       console.log(`New Museum created`, data);
@@ -60,6 +66,9 @@ const createData = (req, res) => {
 const updateData = (req, res) => {
   let data = req.body;
   let id = req.params.id;
+
+  // Remove the 'works' field from the update data
+  delete data.works;
   Museum.findByIdAndUpdate(id, data, {
     //After find a Museum by Id. This option will give us the new data.
     new: true,
@@ -80,20 +89,44 @@ const updateData = (req, res) => {
 };
 
 const deleteData = (req, res) => {
+  // Update database
+  // Check if Artist exists
+  // Delete Artist and related Works
+  // Update related Museum
   let id = req.params.id;
-  Museum.findByIdAndDelete(id)
-    .then((newData) => {
-      if (!newData) {
-        res.status(404).json({ msg: `Museum with id${id}, not found` });
-      } else {
-        res.status(200).json({
-          msg: `Museum with id${id} deleted.`,
-        });
+
+  // Find the Artist document by ID
+  Museum.findById(id)
+    .then((museum) => {
+      if (!museum) {
+        return res.status(404).json({ msg: `Museum with id ${id} not found` });
       }
+
+      // Find the related Works and delete them
+      return Work.find({ museum: id }).then((works) => {
+        // Extract museumIds from the related works
+        const artistIds = works.map((work) => work.artist);
+
+        // Delete the related Works
+        return Work.deleteMany({ museum: id }).then(() => {
+          // Delete the Artist document
+          return Museum.findByIdAndDelete(id).then(() => {
+            // Update related Museums by removing the reference to the deleted Works
+            return Artist.updateMany(
+              { _id: { $in: artistIds } },
+              { $pull: { works: { $in: works.map((work) => work._id) } } }
+            ).then(() => {
+              res.status(200).json({
+                msg: `Museum with id ${id}, related Works, and related Artists updated/deleted.`,
+              });
+            });
+          });
+        });
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).json({ msg: `Museum with id${id}, not found` });
+        res.status(404).json({ msg: `Museum with id ${id} not found` });
       } else {
         console.log(err);
         res.status(500).json(err);

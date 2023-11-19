@@ -1,10 +1,10 @@
 const express = require('express');
 const Artist = require('../models/artist.model.js');
+const Museum = require('../models/museum.model.js');
+const Work = require('../models/work.model.js');
 
 const readData = (req, res) => {
   Artist.find({})
-    .populate('artists')
-    //.lean().select()
     .then((data) => {
       console.log(data);
       if (data.length > 0) {
@@ -44,6 +44,9 @@ const createData = (req, res) => {
   console.log(req.body);
   let inputData = req.body;
 
+  // Works field should not be included during artist creation
+  delete inputData.works;
+
   Artist.create(inputData)
     .then((data) => {
       console.log(`New Artist created`, data);
@@ -60,45 +63,66 @@ const createData = (req, res) => {
 };
 
 const updateData = (req, res) => {
+  console.log('Update data function called');
   let data = req.body;
   let id = req.params.id;
-  Artist.findByIdAndUpdate(id, data, {
-    //After find a Artist by Id. This option will give us the new data.
-    new: true,
-  })
+
+  console.log('ID:', id);
+  console.log('Data to be updated:', data);
+  // Remove the 'works' field from the update data
+  delete data.works;
+
+  Artist.findByIdAndUpdate(id, data, { new: true })
     .then((newData) => {
+      console.log('Data updated successfully');
       res.status(201).json(newData);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(422).json(err);
-      } else if (err.name === 'CastError') {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
-      } else {
-        console.log(err);
-        res.status(500).json(err);
-      }
+      // Handle errors
+      console.log('Error updating data:', err);
+      res.status(500).json(err);
     });
 };
 
 const deleteData = (req, res) => {
-  //Update database
-  //Check if Artist exists
-  //delete Artist
+  // Update database
+  // Check if Artist exists
+  // Delete Artist and related Works
+  // Update related Museum
   let id = req.params.id;
-  Artist.findByIdAndDelete(id)
-    .then((newData) => {
-      if (!newData) {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
-      } else {
-        res.status(200).json({
-          msg: `Artist with id${id} deleted.`,
-        });
+
+  // Find the Artist document by ID
+  Artist.findById(id)
+    .then((artist) => {
+      if (!artist) {
+        return res.status(404).json({ msg: `Artist with id ${id} not found` });
       }
+
+      // Find the related Works and delete them
+      return Work.find({ artist: id }).then((works) => {
+        // Extract museumIds from the related works
+        const museumIds = works.map((work) => work.museum);
+
+        // Delete the related Works
+        return Work.deleteMany({ artist: id }).then(() => {
+          // Delete the Artist document
+          return Artist.findByIdAndDelete(id).then(() => {
+            // Update related Museums by removing the reference to the deleted Works
+            return Museum.updateMany(
+              { _id: { $in: museumIds } },
+              { $pull: { works: { $in: works.map((work) => work._id) } } }
+            ).then(() => {
+              res.status(200).json({
+                msg: `Artist with id ${id}, related Works, and related Museums updated/deleted.`,
+              });
+            });
+          });
+        });
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).json({ msg: `Artist with id${id}, not found` });
+        res.status(404).json({ msg: `Artist with id ${id} not found` });
       } else {
         console.log(err);
         res.status(500).json(err);

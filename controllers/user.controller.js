@@ -18,7 +18,7 @@ const register = (req, res) => {
     .then((user) => {
       newUser.password = undefined;
       return res.status(201).json({
-        msg: 'Hello',
+        msg: 'You have been added as a user',
       });
     })
     .catch((err) => {
@@ -32,15 +32,17 @@ const login = (req, res) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       //Check if passwords match
-      console.log('Found'.user);
+      console.log('Found', user);
       if (!user || !user.comparePassword(req.body.password))
         return res.status(401).json({
           msg: 'Authentication failed. Invalid user or password',
         });
       let token = jwt.sign(
         { email: user.email, full_name: user.full_name, _id: user._id },
-        `process.env.JWT_SECRET`
+        process.env.JWT_SECRET
       );
+      console.log('Generated Token:', token);
+
       return res.status(200).json({ token });
     })
     .catch((err) => {

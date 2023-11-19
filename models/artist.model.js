@@ -1,9 +1,10 @@
 const { Schema, model } = require('mongoose');
-
+//Create a new Mongoose schema for the Artist 
 const artistSchema = new Schema(
   {
     full_name: {
       type: String,
+      //Is required and if not filled print this message
       required: [true, 'Full name field is required'],
     },
     first_name: {
@@ -41,6 +42,7 @@ const artistSchema = new Schema(
       },
     ],
   },
+  //Ads timestamp automatic for each doc. ads: createdAt and updatedAt 
   { timestamps: true }
 );
 

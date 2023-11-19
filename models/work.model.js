@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
 const workSchema = new Schema({
   title: {
     type: String,
-    required: [true, 'Name field is required'],
+    required: [true, 'Title field is required'],
   },
   artist: {
     type: Schema.Types.ObjectId,
