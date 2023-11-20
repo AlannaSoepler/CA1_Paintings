@@ -63,6 +63,7 @@ const createData = (req, res) => {
       // Update the Artist with the new Work ID
       return Artist.findByIdAndUpdate(
         artistId,
+        //Ads element to document
         { $push: { works: work._id } },
         { new: true }
       ).then((updatedArtist) => {
@@ -120,6 +121,9 @@ const updateData = (req, res) => {
 
 const deleteData = (req, res) => {
   let id = req.params.id;
+  // Retrieve the artistId and museumId from the Work document
+  const artistId = req.body.artist;
+  const museumId = req.body.museum;
 
   // Find the Work document by ID
   Work.findById(id)
@@ -127,10 +131,6 @@ const deleteData = (req, res) => {
       if (!work) {
         return res.status(404).json({ msg: `Work with id ${id} not found` });
       }
-
-      // Retrieve the artistId and museumId from the Work document
-      const artistId = work.artist;
-      const museumId = work.museum;
 
       // Update the Artist document to remove the Work ID
       return Artist.findByIdAndUpdate(
@@ -148,8 +148,6 @@ const deleteData = (req, res) => {
           return Work.findByIdAndDelete(id).then(() => {
             res.status(200).json({
               msg: `Work with id ${id} deleted.`,
-              updatedArtist,
-              updatedMuseum,
             });
           });
         });

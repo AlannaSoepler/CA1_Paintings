@@ -108,6 +108,7 @@ const deleteData = (req, res) => {
           // Delete the Artist document
           return Artist.findByIdAndDelete(id).then(() => {
             // Update related Museums by removing the reference to the deleted Works
+            //This piece I got from CharGBT
             return Museum.updateMany(
               { _id: { $in: museumIds } },
               { $pull: { works: { $in: works.map((work) => work._id) } } }
