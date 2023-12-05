@@ -1,6 +1,7 @@
 //Import libraries
 const express = require('express');
 const app = express();
+const cors = require('cors');
 //Sets up port for server to listen to
 const port = 3000;
 //To handle JSON web Tokens
@@ -11,6 +12,8 @@ const user = require('./models/user.model.js');
 require('dotenv').config();
 //initialize the database connection
 require('./configs/db.js')();
+app.use(cors());
+
 //Sets up the middleware
 app.use(express.json());
 //Not very necessary for the API part of the build
@@ -32,7 +35,7 @@ app.use((req, res, next) => {
   //Verifying and decoding the token
   // If token is valid
   //If token contains Bearer. then decode token
-  
+
   if (token && token[0] === 'Bearer') {
     jwt.verify(token[1], process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
