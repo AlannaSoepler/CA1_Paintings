@@ -15,4 +15,4 @@ const workSchema = new Schema({
   },
 });
 
-module.exports = model('work', workSchema);
+module.exports = model('Work', workSchema);

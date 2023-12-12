@@ -5,6 +5,12 @@ const Work = require('../models/work.model.js');
 
 const readData = (req, res) => {
   Artist.find({})
+    .populate({
+      path: 'works',
+      populate: {
+        path: 'museum',
+      },
+    })
     .then((data) => {
       console.log(data);
       if (data.length > 0) {
@@ -23,6 +29,12 @@ const readOne = (req, res) => {
   let id = req.params.id;
 
   Artist.findById(id)
+    .populate({
+      path: 'works',
+      populate: {
+        path: 'museum',
+      },
+    })
     .then((data) => {
       if (!data) {
         res.status(404).json({ msg: `Artist with id${id}, not found` });

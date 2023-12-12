@@ -6,6 +6,8 @@ const Museum = require('../models/museum.model.js');
 
 const readData = (req, res) => {
   Work.find({})
+    .populate('artist')
+    .populate('museum')
     .then((data) => {
       console.log(data);
       if (data.length > 0) {
@@ -24,6 +26,8 @@ const readOne = (req, res) => {
   let id = req.params.id;
 
   Work.findById(id)
+    .populate('artist')
+    .populate('museum')
     .then((data) => {
       if (!data) {
         res.status(404).json({ msg: `Work with id${id}, not found` });

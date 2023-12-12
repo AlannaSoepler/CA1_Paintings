@@ -6,6 +6,12 @@ const Work = require('../models/work.model.js');
 
 const readData = (req, res) => {
   Museum.find({})
+    .populate({
+      path: 'works',
+      populate: {
+        path: 'artist',
+      },
+    })
     .then((data) => {
       console.log(data);
       if (data.length > 0) {
@@ -24,6 +30,12 @@ const readOne = (req, res) => {
   let id = req.params.id;
 
   Museum.findById(id)
+    .populate({
+      path: 'works',
+      populate: {
+        path: 'artist',
+      },
+    })
     .then((data) => {
       if (!data) {
         res.status(404).json({ msg: `Museum with id${id}, not found` });
