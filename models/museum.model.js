@@ -27,7 +27,7 @@ const museumSchema = new Schema(
       required: [true, 'Country date field is required'],
     },
     phone: {
-      type: String,
+      type: Number,
       required: [false, 'Phone field is not required'],
     },
     url: {
